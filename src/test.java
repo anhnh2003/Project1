@@ -1,4 +1,4 @@
-import java.awt.Toolkit;
+
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.util.ArrayList;
@@ -26,5 +26,6 @@ public class test {
         res += e.text() + "\n";
     }
     System.out.println(res);
+    System.out.print("...");
 }
 }
