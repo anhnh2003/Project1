@@ -1,9 +1,6 @@
 import java.util.ArrayList;
-import java.util.concurrent.ArrayBlockingQueue;
-import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 public class test {
     public static void main(String[] args) throws Exception{
@@ -32,7 +29,7 @@ public class test {
      */
     public static String rawText(String url) throws Exception{
         Document document = Jsoup.connect(url).get();
-        Element rawText = document.select("pre");
+        Elements rawText = document.select("pre");
         return rawText.text();
     }
 }
