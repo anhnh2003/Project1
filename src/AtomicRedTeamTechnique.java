@@ -26,4 +26,13 @@ public class AtomicRedTeamTechnique {
         sb.append("}\n\n");
         return sb.toString();
     }
+
+	public String getTechniqueName() {
+		return techniqueName;
+	}
+
+	public List<AtomicRedTeamTestCase> getAtomicTests() {
+	
+		return atomicTests;
+	}
 }

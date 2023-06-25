@@ -29,7 +29,7 @@ public class AtomicRedTeamDataExtractor {
         return atomicTests;
     }
 
-    private Map<String, Object> fetchYaml(String yamlUrl) throws IOException {
+    protected Map<String, Object> fetchYaml(String yamlUrl) throws IOException {
         // Fetch the YAML file from the given URL and parse it using SnakeYAML
         URL url = new URL(yamlUrl);
         Yaml yaml = new Yaml();
