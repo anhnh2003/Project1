@@ -1,6 +1,4 @@
-
 package com.simplilearn.mavenproject;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -22,7 +20,7 @@ public class AtomicRedTeamTechniqueId {
 
     public List<String> crawlTechniqueIds() throws IOException {
         List<String> techniqueIds = new ArrayList<>();
-
+        
         // Fetch the web page and parse it using jsoup
         Document doc = Jsoup.connect(ATOMICS_URL).get();
 

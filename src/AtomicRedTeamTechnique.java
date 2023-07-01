@@ -1,5 +1,4 @@
 package com.simplilearn.mavenproject;
-
 import java.util.List;
 
 public class AtomicRedTeamTechnique {

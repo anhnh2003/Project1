@@ -1,5 +1,4 @@
 package com.simplilearn.mavenproject;
-
 import org.yaml.snakeyaml.Yaml;
 import java.io.IOException;
 import java.net.URL;
@@ -9,7 +8,6 @@ import java.util.ArrayList;
 
 public class AtomicRedTeamDataExtractor {
 
-
     public AtomicRedTeamTechnique fetchTechnique(String techniqueId) throws IOException {
         String yamlUrl = "https://raw.githubusercontent.com/redcanaryco/atomic-red-team/master/atomics/" + techniqueId + "/" + techniqueId + ".yaml";
         Map<String, Object> yamlMap = fetchYaml(yamlUrl);
@@ -18,7 +16,7 @@ public class AtomicRedTeamDataExtractor {
         List<AtomicRedTeamTestCase> atomicTests = parseAtomicTests(atomicTestMaps);
         return new AtomicRedTeamTechnique(techniqueId, techniqueName, atomicTests);
     }
-
+    
     private List<AtomicRedTeamTestCase> parseAtomicTests(List<Map<String, Object>> atomicTestMaps) {
         List<AtomicRedTeamTestCase> atomicTests = new ArrayList<>();
         for (Map<String, Object> atomicTestMap : atomicTestMaps) {
@@ -28,13 +26,12 @@ public class AtomicRedTeamDataExtractor {
         }
         return atomicTests;
     }
-
+    
     protected Map<String, Object> fetchYaml(String yamlUrl) throws IOException {
         // Fetch the YAML file from the given URL and parse it using SnakeYAML
         URL url = new URL(yamlUrl);
         Yaml yaml = new Yaml();
         return (Map<String, Object>) yaml.load(url.openStream());
-    }
-    
+    }   
 }
 
