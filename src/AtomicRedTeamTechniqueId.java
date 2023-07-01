@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 public class AtomicRedTeamTechniqueId {
 	private static final String ATOMICS_URL = "https://github.com/redcanaryco/atomic-red-team/tree/master/atomics";
 	private static final String TECHNIQUE_ID_PATTERN = "^T\\d{4}$";
-	private final String SUBTECHNIQUE_ID_PATTERN = "^T\\d{4}\\.\\d{3}$";
+	private static final String SUBTECHNIQUE_ID_PATTERN = "^T\\d{4}\\.\\d{3}$";
     private static final  String IGNORED_FILES_PATTERN_START = "^00-";
     private static final  String IGNORED_FILES_PATTERN_END = "^mordor_";
 
