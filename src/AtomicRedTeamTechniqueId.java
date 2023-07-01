@@ -14,11 +14,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class AtomicRedTeamTechniqueId {
-    private final  String ATOMICS_URL = "https://github.com/redcanaryco/atomic-red-team/tree/master/atomics";
-    private final  String TECHNIQUE_ID_PATTERN = "^T[0-9]{4}$";
-    private final  String SUBTECHNIQUE_ID_PATTERN = "^T[0-9]{4}\\.[0-9]{3}$";
-    private final  String IGNORED_FILES_PATTERN_START = "^00-";
-    private final  String IGNORED_FILES_PATTERN_END = "^mordor_";
+	private static final String ATOMICS_URL = "https://github.com/redcanaryco/atomic-red-team/tree/master/atomics";
+    private static final  String TECHNIQUE_ID_PATTERN = "^T[0-9]{4}$";
+    private static final String SUBTECHNIQUE_ID_PATTERN = "^T[0-9]{4}(\\.\\d{2})?$";
+    private static final  String IGNORED_FILES_PATTERN_START = "^00-";
+    private static final  String IGNORED_FILES_PATTERN_END = "^mordor_";
 
 
     public List<String> crawlTechniqueIds() throws IOException {
@@ -38,12 +38,12 @@ public class AtomicRedTeamTechniqueId {
         for (Element link : links) {
             String href = link.attr("href");
 
-            // Filter out the first and last files
+            // Skip the first and last files
             if (href.equals("/redcanaryco/atomic-red-team/tree/master/atomics") || href.equals("/redcanaryco/atomic-red-team/tree/master/atomics/")) {
                 continue;
             }
 
-            // Filter out files that match the ignored files patterns
+            // Skip files that match the ignored files patterns
             String fileName = Paths.get(href).getFileName().toString();
             if (ignoredFilesPatternStart.matcher(fileName).find() || ignoredFilesPatternEnd.matcher(fileName).find()) {
                 continue;
@@ -52,9 +52,11 @@ public class AtomicRedTeamTechniqueId {
             // Extract the technique and sub-technique IDs from the file name
             String techniqueId = extractTechniqueId(fileName, techIdPattern);
             String subtechniqueId = extractTechniqueId(fileName, subtechIdPattern);
+            
             if (techniqueId != null) {
                 techniqueIds.add(techniqueId);
             }
+            
             if (subtechniqueId != null) {
                 techniqueIds.add(subtechniqueId);
             }
@@ -70,5 +72,22 @@ public class AtomicRedTeamTechniqueId {
         } else {
             return null;
         }
+        
+        
     }
+    
+    public static void main(String[] args) throws Exception {
+      
+      
+        AtomicRedTeamTechniqueId techniques = new AtomicRedTeamTechniqueId();
+        
+        List<String> techniqueIds = techniques.crawlTechniqueIds();
+        System.out.println("All technique and sub-technique IDs:");
+        int count = 0;
+        for (String id : techniqueIds) {
+            System.out.println(id);
+            count += 1;
+        }
+        System.out.print("Number of techniques and subtechniques in AtomicRedTeam: " + count);
+    }   
 }
