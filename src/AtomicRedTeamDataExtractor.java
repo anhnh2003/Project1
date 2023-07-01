@@ -35,7 +35,6 @@ public class AtomicRedTeamDataExtractor {
         Yaml yaml = new Yaml();
         return (Map<String, Object>) yaml.load(url.openStream());
     }
-
-  
+    
 }
 

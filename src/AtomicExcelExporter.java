@@ -12,6 +12,10 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 
 public class AtomicExcelExporter {
+	
+	private AtomicExcelExporter() {
+		throw new IllegalStateException("Utility class");
+	}
 
     // Export a list of data to an Excel file with the given filename
     public static void exportToExcel(List<List<Object>> data, String filename) throws IOException {

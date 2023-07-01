@@ -9,16 +9,7 @@ public class App {
         AtomicRedTeamDataExtractor dataExtractor = new AtomicRedTeamDataExtractor();
       
         AtomicRedTeamTechniqueId techniques = new AtomicRedTeamTechniqueId();
-        
-       /* List<String> techniqueIds = techniques.crawlTechniqueIds();
-        System.out.println("All technique and sub-technique IDs:");
-        int count = 0;
-        for (String id : techniqueIds) {
-            System.out.println(id);
-            count += 1;
-        }
-        System.out.print("Number of techniques and subtechniques in AtomicRedTeam: " + count);
-        */
+
         List<List<Object>> data = new ArrayList<>();
 
         // Add header row
@@ -27,7 +18,6 @@ public class App {
         List<String> techniqueIds = techniques.crawlTechniqueIds();
         for (String techniqueId : techniqueIds) {
             AtomicRedTeamTechnique technique = dataExtractor.fetchTechnique(techniqueId);
-          //  System.out.println(technique.formatAsText());
             String techniqueName = technique.getTechniqueName();
 
             for (AtomicRedTeamTestCase atomicTest : technique.getAtomicTests()) {
