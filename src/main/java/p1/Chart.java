@@ -209,7 +209,12 @@ public class Chart extends JComponent implements MouseListener {
                     i++;
                 }
                 DefaultTableModel model = new DefaultTableModel(data, columnNames);
-                JTable table = new JTable(model);
+                JTable table = new JTable(model){
+                    @Override
+                    public boolean isCellEditable(int row, int column) {
+                        return false;
+                    }
+                };
 
                 JScrollPane scrollPane = new JScrollPane(table);
                 detailFrame.getContentPane().add(scrollPane);
