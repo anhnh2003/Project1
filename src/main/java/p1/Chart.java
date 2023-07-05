@@ -1,107 +1,193 @@
 package p1;
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-
-public class Chart extends JPanel {
+import java.util.Set;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.table.DefaultTableModel;
+import java.awt.Graphics2D;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+public class Chart extends JComponent implements MouseListener {
+    
     private List<String> mitre;
     private List<String> atomic;
-    private double coverageRate;
-    private Color atomicColor = Color.BLUE;
-    private Color missingColor = Color.RED;
-
+    private Set<String> mitreNotAtomic;
+    private int bothCount;
+    private int mitreNotAtomicCount;
+    private static final int CHART_SIZE = 300;
+    private static final int CHART_MARGIN = 200;
+    private static final int ARC_START_ANGLE = 90; // Start angle for both and mitre not atomic arcs
+    private static final int ARC_GAP_ANGLE = 0; // Gap between arcs to show separation
+    private static final Color BOTH_COLOR = Color.BLUE;
+    private static final Color MITRE_NOT_ATOMIC_COLOR = Color.RED;
+    
     public Chart(List<String> mitre, List<String> atomic) {
         this.mitre = mitre;
         this.atomic = atomic;
-        int count = 0;
-        for (String m : mitre) {
-            for (String a : atomic) {
-                if (m.equals(a)) {
-                    count++;
-                }
+        this.bothCount = 0;
+        this.mitreNotAtomicCount = 0;
+        this.mitreNotAtomic = new HashSet<>();
+        
+        // Calculate counts and populate mitreNotAtomic set
+        for (String item : mitre) {
+            if (atomic.contains(item)) {
+                bothCount++;
+            } else {
+                mitreNotAtomicCount++;
+                mitreNotAtomic.add(item);
             }
         }
-        coverageRate =  (float) count / mitre.size();
-        setPreferredSize(new Dimension(300, 300));
+        // Set component size to square, with padding
+        setPreferredSize(new Dimension(CHART_SIZE + CHART_MARGIN * 2, CHART_SIZE + CHART_MARGIN * 2));
+        
+        // Add mouse listener to track mouse events
+        addMouseListener(this);
     }
-
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-
-        Graphics2D g2 = (Graphics2D) g;
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-        int width = getWidth();
-        int height = getHeight();
-        int diameter = Math.min(width, height) - 20;
-        int x = (width - diameter) / 2;
-        int y = (height - diameter) / 2;
-
-        // Draw the circle
-        g2.setColor(Color.LIGHT_GRAY);
-        g2.fillOval(x, y, diameter, diameter);
-
-        // Draw the atomic elements
-        g2.setColor(atomicColor);
-        double startAngle = Math.toDegrees(Math.atan2((double) height / 2 - y, (double) width / 2 - x)) + 90;
-        double endAngle = startAngle + 360 * (coverageRate / 100.0);
-        g2.fillArc(x, y, diameter, diameter, (int) startAngle, (int) (endAngle - startAngle));
-
-        // Draw the missing elements
-        g2.setColor(missingColor);
-        Set<String> missing = new HashSet<>(mitre);
-        missing.removeAll(atomic);
-        startAngle = endAngle;
-        endAngle = startAngle + 360 * (missing.size() / (double) mitre.size());
-        g2.fillArc(x, y, diameter, diameter, (int) startAngle, (int) (endAngle - startAngle));
-
-        // Draw the legend
-        int legendWidth = width / 3;
-        int legendHeight = height / 3;
-        int legendX = width - legendWidth - 10;
-        int legendY = 10;
-        g2.setColor(Color.WHITE);
-        g2.fillRect(legendX, legendY, legendWidth, legendHeight);
-        g2.setColor(atomicColor);
-        g2.fillOval(legendX + 10, legendY + 10, legendHeight - 20, legendHeight - 20);
-        g2.setColor(Color.BLACK);
-        g2.drawString("Atomic Elements", legendX + legendHeight, legendY + legendHeight / 2);
-        g2.setColor(missingColor);
-        g2.fillOval(legendX + 10, legendY + legendHeight + 10, legendHeight - 20, legendHeight - 20);
-        g2.setColor(Color.BLACK);
-        g2.drawString("Missing Elements", legendX + legendHeight, legendY + legendHeight + legendHeight / 2);
-
-        // Draw the coverage rate text
-        g2.setColor(Color.BLACK);
-        g2.setFont(new Font("Arial", Font.BOLD, 20));
-        String rateString = String.format("%.2f%%", coverageRate);
-        int textWidth = g2.getFontMetrics().stringWidth(rateString);
-        int textHeight = g2.getFontMetrics().getHeight();
-        g2.drawString(rateString, width / 2 - textWidth / 2, height / 2 + textHeight / 2);
+        
+        // Calculate angles and percentages for both and mitre not atomic arcs
+        int totalAngle = 360 - ARC_GAP_ANGLE; // Total angle available, accounting for gap
+        int bothAngle = bothCount * totalAngle / mitre.size();
+        int mitreNotAtomicAngle = mitreNotAtomicCount * totalAngle / mitre.size();
+        double bothPercentage = (double) bothAngle / 360 * 100;
+        double mitreNotAtomicPercentage = (double) mitreNotAtomicAngle / 360 * 100;
+        
+        // Adjust angles if necessary to ensure sum is exactly 360 degrees
+        int angleSum = bothAngle + mitreNotAtomicAngle;
+        if (angleSum < totalAngle) {
+            mitreNotAtomicAngle += totalAngle - angleSum;
+            mitreNotAtomicPercentage = (double) mitreNotAtomicAngle / 360 * 100;
+        } else if (angleSum > totalAngle) {
+            bothAngle += angleSum - totalAngle;
+            bothPercentage = (double) bothAngle / 360 * 100;
+        }
+        
+        // Draw both arc with percentage label
+        g.setColor(BOTH_COLOR);
+        g.fillArc(CHART_MARGIN+300, CHART_MARGIN, CHART_SIZE, CHART_SIZE, ARC_START_ANGLE, bothAngle);
+        String bothLabel = String.format("%.1f%%", bothPercentage);
+        int radius = CHART_SIZE / 2;
+        int bothLabelX = (int) (CHART_MARGIN+350 + radius + radius * Math.cos(Math.toRadians(ARC_START_ANGLE + bothAngle / 2)));
+        int bothLabelY = (int) (CHART_MARGIN+30 + radius - radius * Math.sin(Math.toRadians(ARC_START_ANGLE + bothAngle / 2)));
+        g.setColor(Color.BLACK);
+        g.drawString(bothLabel, bothLabelX, bothLabelY);
+        
+        // Draw mitre not atomic arc with percentage label
+        g.setColor(MITRE_NOT_ATOMIC_COLOR);
+        g.fillArc(CHART_MARGIN+300, CHART_MARGIN, CHART_SIZE, CHART_SIZE, ARC_START_ANGLE + bothAngle + ARC_GAP_ANGLE, mitreNotAtomicAngle);
+        String mitreNotAtomicLabel = String.format("%.1f%%", mitreNotAtomicPercentage);
+        int mitreNotAtomicLabelX = (int) (CHART_MARGIN+200 + radius + radius * Math.cos(Math.toRadians(ARC_START_ANGLE + bothAngle + ARC_GAP_ANGLE + mitreNotAtomicAngle / 2)));
+        int mitreNotAtomicLabelY = (int) (CHART_MARGIN + radius - radius * Math.sin(Math.toRadians(ARC_START_ANGLE + bothAngle + ARC_GAP_ANGLE + mitreNotAtomicAngle / 2)));
+        g.setColor(Color.BLACK);
+        g.drawString(mitreNotAtomicLabel, mitreNotAtomicLabelX, mitreNotAtomicLabelY);
+        
+        // Draw chart label
+        g.setColor(Color.BLACK);
+        g.drawString("Mitre vs. Atomic Techniques", CHART_MARGIN+350, CHART_MARGIN-70);
+        drawTable((Graphics2D) g, 50, 50, getWidth() - 100, getHeight() - 100);
+        // draw description
+        g.setColor(BOTH_COLOR);
+        g.fillArc(CHART_MARGIN+450, CHART_MARGIN+300, CHART_SIZE/10, CHART_SIZE/10, ARC_START_ANGLE + bothAngle + ARC_GAP_ANGLE, 30);
+        g.setColor(MITRE_NOT_ATOMIC_COLOR);
+        g.fillArc(CHART_MARGIN+250, CHART_MARGIN+300, CHART_SIZE/10, CHART_SIZE/10, ARC_START_ANGLE + bothAngle + ARC_GAP_ANGLE, 30);
+        g.setColor(Color.BLACK);
+        g.drawString("Covered Techniques", CHART_MARGIN+450+CHART_SIZE/10+2, CHART_MARGIN+300+CHART_SIZE/10);
+        g.drawString("Missing Techniques", CHART_MARGIN+250+CHART_SIZE/10+2, CHART_MARGIN+300+CHART_SIZE/10);
     }
-
-    public void setAtomicColor(Color color) {
-        /// set default color is blue
-        atomicColor = color;
-        repaint();
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        // Determine which arc was clicked
+        int x = e.getX() - CHART_MARGIN-300;
+        int y = e.getY() - CHART_MARGIN;
+        int radius = CHART_SIZE / 2;
+        int centerX = radius;
+        int centerY = radius;
+        double distance = Math.sqrt(Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2));
+        
+        if (distance > radius) {
+            // Clicked outside chart, do nothing
+            return;
+        }
+        
+        // Determine which set of items to display
+        List<String> items;
+        if (x < centerX) {
+            items = atomic;
+        } else {
+            items = new ArrayList<>(mitreNotAtomic);
+        }
+        
+        // Display items
+        JFrame frame = new JFrame();
+        String title = (x < centerX ? "Covered Techniques" : "Missing Techniques");
+        StringBuilder message = new StringBuilder();
+        message.append("Total: ").append(items.size()).append("Techniques").append("\n");
+        for (String item : items) {
+            message.append(item).append("\n");
+        }
+        frame.setTitle(title);
+        frame.setSize(200, 200);
+        frame.setLocationRelativeTo(this);
+        JTextArea textArea = new JTextArea(message.toString());
+        textArea.setEditable(false);
+        frame.add(new JScrollPane(textArea));
+        frame.setVisible(true);
+        
     }
-
-    public void setMissingColor(Color color) {
-        missingColor = color;
-        repaint();
+    private void drawTable(Graphics2D g2d, int x, int y, int width, int height) {
+        g2d.setColor(Color.BLACK);
+        int rowHeight = 20;
+        int headerY = y + rowHeight;
+        g2d.drawLine(x, headerY, x + width, headerY);
+        g2d.drawString("Mitre techniques", x + 5, headerY + rowHeight - 5);
+        g2d.drawString("Status", x + 205, headerY + rowHeight - 5);
+        int itemY = headerY + rowHeight;
+        for (String item : mitre) {
+            if (mitreNotAtomic.contains(item)) {
+                g2d.drawString(item, x + 5, itemY + rowHeight - 5);
+                g2d.drawString("Missing", x + 205, itemY + rowHeight - 5);
+            } else {
+                g2d.drawString(item, x + 5, itemY + rowHeight - 5);
+            }
+            itemY += rowHeight;
+        }
     }
-
-    public void drawChart(List<String> mitre, List<String> atomic) {
-
-        JFrame frame = new JFrame("Chart");
+    // Unused mouse listener methods
+    @Override public void mousePressed(MouseEvent e) {}
+    @Override public void mouseReleased(MouseEvent e) {}
+    @Override public void mouseEntered(MouseEvent e) {}
+    @Override public void mouseExited(MouseEvent e) {}
+    
+    public void drawChart(){
+        JFrame frame = new JFrame();
+        frame.setTitle("Coverage Chart");
+        frame.setSize(400, 400);
+        frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        Chart chart = new Chart(mitre, atomic);
 
+        JPanel mainPanel = new JPanel(new BorderLayout());
+
+        // Add the chart to the main panel
+        mainPanel.add(this, BorderLayout.CENTER);
+
+        // Add the 'more details' button to a separate panel
+        JPanel buttonPanel = new JPanel(new FlowLayout());
         JButton detailButton = new JButton("More Detail");
         detailButton.addActionListener(new ActionListener() {
             @Override
@@ -111,22 +197,15 @@ public class Chart extends JPanel {
 
                 // Create a table to display the covered and missing elements
                 String[] columnNames = {"Covered ID", "Missing ID"};
-                List<String> missing = new ArrayList<>(mitre);
-                missing.removeAll(atomic);
-                Object[][] data = new Object[atomic.size() + missing.size()][2];
+                Object[][] data = new Object[atomic.size() + mitreNotAtomic.size()][2];
                 int i = 0;
-                for (String a : atomic) {
-                    data[i][0] = a;
-                    if (mitre.contains(a)) {
-                        data[i][1] = "";
-                    } else {
-                        data[i][1] = "Missing";
-                    }
+                for(String item: atomic) {
+                    data[i][0] = item;
                     i++;
                 }
-                for (String m : missing) {
-                    data[i][0] = "";
-                    data[i][1] = m;
+                i = 0;
+                for(String item: mitreNotAtomic) {
+                    data[i][1] = item;
                     i++;
                 }
                 DefaultTableModel model = new DefaultTableModel(data, columnNames);
@@ -139,14 +218,13 @@ public class Chart extends JPanel {
                 detailFrame.setVisible(true);
             }
         });
-
-        JPanel buttonPanel = new JPanel();
         buttonPanel.add(detailButton);
 
-        frame.getContentPane().setLayout(new BorderLayout());
-        frame.getContentPane().add(chart, BorderLayout.CENTER);
-        frame.getContentPane().add(buttonPanel, BorderLayout.SOUTH);
-        frame.pack();
+        // Add the button panel to the main panel
+        mainPanel.add(buttonPanel, BorderLayout.SOUTH);
+
+        frame.add(mainPanel);
         frame.setVisible(true);
     }
+    
 }
