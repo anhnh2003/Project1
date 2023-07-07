@@ -1,18 +1,53 @@
 package com.simplilearn.mavenproject;
-import java.util.List;
+
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.http.impl.io.AbstractMessageWriter;
+import org.apache.poi.hpsf.extractor.HPSFPropertiesExtractor;
+
 public class App {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws IOException {
+        MitreATTCKCrawler mitre = new MitreATTCKCrawler();
+        mitre.crawlMitreTechniques();
+        // Print the IDs and names for Mitre data
+        for (MitreTechnique technique : mitre.getMitreTechniques()) {
+            System.out.println(String.format("TechniqueID: %s\n", technique.getId()));
+        }
+        
+
+        // Export Mitre techniques to Excel file
+        List<List<Object>> mitreTechniqueData = new ArrayList<>();
+        mitreTechniqueData.add(List.of("Technique ID", "Technique Name"));
+        for (MitreTechnique technique : mitre.getMitreTechniques()) {
+            List<Object> row = new ArrayList<>();
+            row.add(technique.getId());
+            row.add(technique.getName());
+            mitreTechniqueData.add(row);
+        }
+
+        String mitreFilename = "mitre_techniques.xlsx";
+        try {
+            AtomicExcelExporter.exportToExcel(mitreTechniqueData, mitreFilename);
+            System.out.println("Mitre techniques exported to " + mitreFilename);
+        } catch (IOException e) {
+            System.err.println("An error occurred while exporting Mitre techniques to Excel: " + e.getMessage());
+        } catch (RuntimeException e) {
+            System.err.println("An error occurred while exporting Mitre techniques to Excel.");
+            e.printStackTrace();
+        } 
+
         AtomicRedTeamDataExtractor dataExtractor = new AtomicRedTeamDataExtractor();
         AtomicRedTeamTechniqueId techniques = new AtomicRedTeamTechniqueId();
-        List<List<Object>> data = new ArrayList<>();
+        List<List<Object>> arteamData = new ArrayList<>();
 
-        // Add header row
-        data.add(List.of("Technique ID", "Technique Name", "Test Case", "Supported Platforms"));
+        // Add header row for Atomic Red Team data
+        arteamData.add(List.of("Technique ID", "Technique Name", "Test Case", "Supported Platforms"));
 
         List<String> techniqueIds = techniques.crawlTechniqueIds();
-        for (String techniqueId : techniqueIds) {
-            AtomicRedTeamTechnique technique = dataExtractor.fetchTechnique(techniqueId);       
+     /*   for (String techniqueId : techniqueIds) {
+            AtomicRedTeamTechnique technique = dataExtractor.fetchTechnique(techniqueId);
             String techniqueName = technique.getTechniqueName();
             for (AtomicRedTeamTestCase atomicTest : technique.getAtomicTests()) {
                 List<Object> row = new ArrayList<>();
@@ -20,11 +55,30 @@ public class App {
                 row.add(techniqueName);
                 row.add(atomicTest.getName());
                 row.add(String.join(", ", atomicTest.getSupportedPlatforms()));
-                data.add(row);
+                arteamData.add(row);
+            
         }
-    }        
-        AtomicExcelExporter.exportToExcel(data, "C:\\Users\\Admin\\Documents\\atomic_red_team_data5.xlsx");
-  }
-}
-   
 
+        // Export Atomic Red Team data to Excel file
+        String arteamFilename = "atomic_red_team_data.xlsx";
+        try {
+            AtomicExcelExporter.exportToExcel(arteamData, arteamFilename);
+            System.out.println("Atomic Red Team data exported to " + arteamFilename);
+        } catch (IOException e) {
+            System.err.println("An error occurred while exporting Atomic Red Team data to Excel: " + e.getMessage());
+        } catch (RuntimeException e) {
+            System.err.println("An error occurred while exporting Atomic Red Team data to Excel.");
+            e.printStackTrace();
+        } */
+        List<String> mitreTechnique = new ArrayList<>() ;
+        for ( MitreTechnique i : mitre.getMitreTechniques()) {
+        	mitreTechnique.add(i.getId());        	
+        }
+        mitre.crawlMitreTechniques();
+        System.out.println(mitre.getMitreTechniques());
+        Chart chart = new Chart(mitreTechnique, techniqueIds);
+        chart.drawChart();
+
+    }
+
+}
