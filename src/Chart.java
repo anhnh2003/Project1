@@ -117,21 +117,21 @@ public class Chart extends JComponent implements MouseListener {
     @Override
     public void mouseClicked(MouseEvent e) {
         // Determine which arc was clicked
-        int x = e.getX() - CHART_MARGIN-300;
-        int y = e.getY() - CHART_MARGIN;
-        int radius = CHART_SIZE / 2;
-        int centerX = radius;
-        int centerY = radius;
-        double distance = Math.sqrt(Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2));
+    	int x = e.getX();
+    	double xd = (double) (x - CHART_MARGIN - 300);
+    	int y = e.getY() - CHART_MARGIN;
+    	int radius = CHART_SIZE / 2;
+    	int centerX = radius;
+    	int centerY = radius;
+    	double distance = Math.sqrt(Math.pow(xd - centerX, 2) + Math.pow(y - centerY, 2));
         
-        if (distance > radius) {
-            // Clicked outside chart, do nothing
-            return;
-        }
-        
-        // Determine which set of items to display
-        List<String> items;
-        if (x < centerX) {
+    	if ((double) distance > radius) {
+    	    // Clicked outside chart, do nothing
+    	    return;
+    	}
+    	// Determine which set of items to display
+    	List<String> items;
+    	if (x < centerX) {
             items = atomic;
         } else {
             items = new ArrayList<>(mitreNotAtomic);
