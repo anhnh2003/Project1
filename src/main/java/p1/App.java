@@ -2,8 +2,12 @@ package p1;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 public class App {
+    private static final Logger logger = LoggerFactory.getLogger(App.class);
     public static void main(String[] args) throws Exception {
         /// Construct the Atomic Red Team and Mitre ATT&CK crawlers class
         MitreATTCKCrawler mitre = new MitreATTCKCrawler();
@@ -71,10 +75,9 @@ public class App {
                     AtomicExcelExporter.exportToExcel(redteamData, redteamFilename);
                     System.out.println("Atomic Red Team data exported to " + redteamFilename);
                 } catch (IOException e) {
-                    System.err.println("An error occurred while exporting Atomic Red Team data to Excel: " + e.getMessage());
+                    logger.error("An error occurred while exporting Mitre techniques to Excel: {}", e.getMessage(), e);
                 } catch (RuntimeException e) {
-                    System.err.println("An error occurred while exporting Atomic Red Team data to Excel.");
-                    e.printStackTrace();
+                    logger.error("An error occurred while exporting Mitre techniques to Excel.", e);
                 }
                 break;
             case 4:
