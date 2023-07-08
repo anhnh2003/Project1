@@ -96,10 +96,9 @@ public class App {
                     AtomicExcelExporter.exportToExcel(mitreTechniqueData, mitreFilename);
                     System.out.println("Mitre techniques exported to " + mitreFilename);
                 } catch (IOException e) {
-                    System.err.println("An error occurred while exporting Mitre techniques to Excel: " + e.getMessage());
+                    logger.error("An error occurred while exporting Mitre techniques to Excel: {}", e.getMessage(), e);
                 } catch (RuntimeException e) {
-                    System.err.println("An error occurred while exporting Mitre techniques to Excel.");
-                    e.printStackTrace();
+                    logger.error("An error occurred while exporting Mitre techniques to Excel.", e);
                 } 
                         break;
             case 5:
