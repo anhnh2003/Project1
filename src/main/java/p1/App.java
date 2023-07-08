@@ -21,9 +21,9 @@ public class App {
         //6. exit
         System.out.println("Welcome to the Atomic Red Team and Mitre ATT&CK Crawler!");
         System.out.println("Please select an option:");
-        System.out.println("1. Display Atomic Red Team Data");
-        System.out.println("2. Display Mitre ATT&CK");
-        System.out.println("3. Export Atomic Red Team to Excel");
+        System.out.println("1. Display Atomic Red Team Data.");
+        System.out.println("2. Display Mitre ATT&CK.");
+        System.out.println("3. Export Atomic Red Team to Excel.");
         System.out.println("4. Export Mitre ATT&CK to Excel");
         System.out.println("5. Compare Atomic Red Team and Mitre ATT&CK");
         System.out.println("6. Exit");
