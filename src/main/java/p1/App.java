@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class App {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         /// Construct the Atomic Red Team and Mitre ATT&CK crawlers class
         MitreATTCKCrawler mitre = new MitreATTCKCrawler();
         AtomicRedTeamDataExtractor dataExtractor = new AtomicRedTeamDataExtractor();
