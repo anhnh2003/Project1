@@ -86,12 +86,12 @@ public class Chart extends JComponent implements MouseListener {
         g.fillArc(CENTER_MARGIN_X,CENTER_MARGIN_Y, CHART_SIZE, CHART_SIZE, ARC_START_ANGLE, bothAngle);
         int radius = CHART_SIZE / 2;
         // Set label position
-        int bothLabelX = (CENTER_MARGIN_X+220);
+        int bothLabelX = (CENTER_MARGIN_X+20);
         int bothLabelY = (CENTER_MARGIN_Y+120);
         // Draw mitre not atomic arc 
         g.setColor(MITRE_NOT_ATOMIC_COLOR);
         g.fillArc(CENTER_MARGIN_X, CENTER_MARGIN_Y, CHART_SIZE, CHART_SIZE, ARC_START_ANGLE + bothAngle + ARC_GAP_ANGLE, mitreNotAtomicAngle);
-        int mitreNotAtomicLabelX = (CENTER_MARGIN_X+20);
+        int mitreNotAtomicLabelX = (CENTER_MARGIN_X+220);
         int mitreNotAtomicLabelY = (CENTER_MARGIN_Y+120);
         // Draw percentage labels
         g.setColor(Color.BLACK);

@@ -39,7 +39,9 @@ public class App {
         switch (choice) {
             case 1:
                 System.out.println("Crawling Atomic Red Team...");
-                System.out.println(techniqueIds);
+                for (String techniqueId : techniqueIds) {
+                    System.out.println("Atomic Technique ID:" + techniqueId);
+                }
                 break;
             case 2:
                 System.out.println("Crawling Mitre ATT&CK...");
