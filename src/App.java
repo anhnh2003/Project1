@@ -4,8 +4,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class App {
-    public static void main(String[] args) throws IOException {
+	private static final Logger logger = LoggerFactory.getLogger(App.class);	
+    public static void main(String[] args) throws IOException, MitreATTCKCrawler {
         MitreATTCKCrawler mitre = new MitreATTCKCrawler();
         mitre.crawlMitreTechniques();
         // Print the IDs and names for Mitre data
@@ -27,12 +31,10 @@ public class App {
         String mitreFilename = "mitre_techniques.xlsx";
         try {
             AtomicExcelExporter.exportToExcel(mitreTechniqueData, mitreFilename);
-            System.out.println("Mitre techniques exported to " + mitreFilename);
         } catch (IOException e) {
-            System.err.println("An error occurred while exporting Mitre techniques to Excel: " + e.getMessage());
-        } catch (RuntimeException e) {
-            System.err.println("An error occurred while exporting Mitre techniques to Excel.");
-            e.printStackTrace();
+            // Handle the exception
+        } catch (Exception e) {
+            logger.error("An error occurred while exporting Mitre techniques to Excel.", e);     
         } 
         String excelFilePath = "C:\\Users\\Admin\\Documents\\atomic_red_team_data.xlsx";
         int columnIndex = 0; // Assuming Technique ID is in the first column

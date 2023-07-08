@@ -4,21 +4,27 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MitreATTCKCrawler {
+public class MitreATTCKCrawler extends Exception{
     private static final String URL = "https://attack.mitre.org/techniques/enterprise/";
-
     private List<MitreTechnique> techniques;
+    private static final Logger logger = LoggerFactory.getLogger(MitreATTCKCrawler.class);
+    
+    public MitreATTCKCrawler(String message) {
+    	super(message);
+    }
 
     public MitreATTCKCrawler() {
         techniques = new ArrayList<>();
     }
 
-    public void crawlMitreTechniques() {
+    public void crawlMitreTechniques() throws MitreATTCKCrawler {
         try {
             // Validate and sanitize URL
             Connection.Response response = Jsoup.connect(URL)
@@ -62,9 +68,9 @@ public class MitreATTCKCrawler {
                 techniques.add(technique);
             }
         } catch (IOException e) {
-            // Handle any IOException appropriately without revealing sensitive information
-            System.err.println("An error occurred while connecting to the website.");
-            e.printStackTrace();
+            // Handle the exception appropriately without revealing sensitive information
+            logger.error("An error occurred while connecting to the website.", e);
+            throw new MitreATTCKCrawler("An error occurred while connecting to the website. Please try again later.");
         }
     }
 
