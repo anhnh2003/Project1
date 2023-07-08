@@ -118,7 +118,7 @@ public class Chart extends JComponent implements MouseListener {
     public void mouseClicked(MouseEvent e) {
         // Determine which arc was clicked
     	int x = e.getX();
-    	double xd = (double) (x - CHART_MARGIN - 300);
+    	double xd = (double) x - CHART_MARGIN - 300;
     	int y = e.getY() - CHART_MARGIN;
     	int radius = CHART_SIZE / 2;
     	int centerX = radius;
