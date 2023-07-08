@@ -120,10 +120,11 @@ public class Chart extends JComponent implements MouseListener {
         int x = e.getX();
     	double xd = (double) x - CHART_MARGIN - 300;
     	int y = e.getY() - CHART_MARGIN;
+        double yd = (double) y;
     	int radius = CHART_SIZE / 2;
     	int centerX = radius;
     	int centerY = radius;
-    	double distance = Math.sqrt(Math.pow(xd - centerX, 2) + Math.pow(y - centerY, 2));
+    	double distance = Math.sqrt(Math.pow(xd - centerX, 2) + Math.pow(yd - centerY, 2));
         
         if (distance > radius) {
             // Clicked outside chart, do nothing
