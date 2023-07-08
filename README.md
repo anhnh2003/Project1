@@ -12,8 +12,8 @@ All necessary dependencies are listed in the `pom.xml` file.
 
 ## Contributors
 
-- Nguyen Hoang Anh
-- Nguyen Huy Hoang
+- Nguyen Hoang Anh 20214946
+- Nguyen Huy Hoang 20214959
 
 ## Thank You
 
