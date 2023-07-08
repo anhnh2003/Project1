@@ -54,7 +54,6 @@ public class AtomicRedTeamTechniqueId {
                 techniqueIds.add(subtechniqueId);
             }
         }
-
         return techniqueIds;
     }
 

@@ -1,58 +1,100 @@
 package p1;
-import java.io.File;
-import java.io.FileInputStream;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.apache.poi.ss.usermodel.Sheet;
+import org.jsoup.Connection;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 public class MitreATTCKCrawler {
-    private  String pathString = "Excel/enterprise-attack-v13.1-techniques.xlsx";
-    private  List<String> mitreTechinique = new ArrayList<>();
-    public String getPathString() {
-        return pathString;
+    private static final String URL = "https://attack.mitre.org/techniques/enterprise/";
+
+    private List<MitreTechnique> techniques;
+
+    public MitreATTCKCrawler() {
+        techniques = new ArrayList<>();
     }
-    public List<String> getMitreTechinique() {
-        return mitreTechinique;
-    }
-    
-    public  void dataCrawler(String pathString) throws Exception {
-        // Open the Excel file
-        FileInputStream file = new FileInputStream(new File(pathString));
-        
-        // Create a workbook instance from the XLSX file
-        XSSFWorkbook workbook = new XSSFWorkbook(file);
-        
-        // Get the first sheet in the workbook
-        Sheet sheet = workbook.getSheetAt(0);
-        
-        // Iterate over each row in the sheet
-        for (Row row : sheet) {
-            // Get the cell in the "ID" column for this row
-            Cell cell = row.getCell(0); // assuming ID is the first column
-            
-            // If the cell is not empty and has a string value
-            if (cell != null && !cell.getStringCellValue().equals("ID")) {
-                // Get the value of the cell
-                mitreTechinique.add(cell.getStringCellValue());
-                
-            }
-        }
-        // Close the workbook and the file input stream
-        workbook.close();
-        file.close();
-    }
-    public float coverageRate(List<String> mitreTechiniques, List<String> atomicTechinique) {
-        int count = 0;
-        for (String mitre : mitreTechiniques) {
-            for (String atomic : atomicTechinique) {
-                if (mitre.equals(atomic)) {
-                    count++;
+
+    public void crawlMitreTechniques() {
+        try {
+            // Validate and sanitize URL
+            Connection.Response response = Jsoup.connect(URL)
+                    .timeout(5000)
+                    .followRedirects(true)
+                    .execute();
+
+            // Fetch the HTML content
+            Document doc = response.parse();
+
+            // Find all technique and sub-technique rows
+            Elements rows = doc.select("tr.technique, tr.sub");
+
+            // Process each row
+            String previousID = "";
+            String previousName = "";
+            for (Element row : rows) {
+                // Extract the ID and name
+                String id = extractText(row, "td a[href^='/techniques/']");
+                String name = "";
+
+                if (row.hasClass("sub")) {
+                    name = extractText(row, "td:nth-child(3) a");
+                } else {
+                    name = extractText(row, "td:nth-child(2) a");
                 }
+
+                // Modify ID and name if necessary
+                if (id.startsWith(".")) {
+                    if (previousID.startsWith("T")) {
+                        id = previousID +"."+ id.substring(1);
+                        name = previousName + ": " + name;
+                    }
+                } else {
+                    previousID = id;
+                    previousName = name;
+                }
+
+                // Create Technique object and add it to the list
+                MitreTechnique technique = new MitreTechnique(id, name);
+                techniques.add(technique);
             }
+        } catch (IOException e) {
+            // Handle any IOException appropriately without revealing sensitive information
+            System.err.println("An error occurred while connecting to the website.");
+            e.printStackTrace();
         }
-        return (float) count / mitreTechiniques.size();
+    }
+
+    // Helper method to extract text from HTML element
+    private String extractText(Element element, String selector) {
+        Element link = element.selectFirst(selector);
+        return link != null ? link.text().trim() : "";
+    }
+
+    public List<MitreTechnique> getMitreTechniques() {
+        return techniques;
+    }
+
+}
+
+// Technique class to represent a technique
+class MitreTechnique {
+    private String id;
+    private String name;
+
+    public MitreTechnique(String id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
     }
 }
