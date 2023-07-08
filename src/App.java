@@ -4,17 +4,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.http.impl.io.AbstractMessageWriter;
-import org.apache.poi.hpsf.extractor.HPSFPropertiesExtractor;
-
 public class App {
     public static void main(String[] args) throws IOException {
         MitreATTCKCrawler mitre = new MitreATTCKCrawler();
         mitre.crawlMitreTechniques();
         // Print the IDs and names for Mitre data
-        for (MitreTechnique technique : mitre.getMitreTechniques()) {
+      /*  for (MitreTechnique technique : mitre.getMitreTechniques()) {
             System.out.println(String.format("TechniqueID: %s\n", technique.getId()));
-        }
+        }*/
         
 
         // Export Mitre techniques to Excel file
@@ -37,6 +34,9 @@ public class App {
             System.err.println("An error occurred while exporting Mitre techniques to Excel.");
             e.printStackTrace();
         } 
+        String excelFilePath = "C:\\Users\\Admin\\Documents\\atomic_red_team_data.xlsx";
+        int columnIndex = 0; // Assuming Technique ID is in the first column
+        List<String> techniqueIds = ExcelDataImporter.importDataFromExcel(excelFilePath, columnIndex);
 
         AtomicRedTeamDataExtractor dataExtractor = new AtomicRedTeamDataExtractor();
         AtomicRedTeamTechniqueId techniques = new AtomicRedTeamTechniqueId();
@@ -45,8 +45,8 @@ public class App {
         // Add header row for Atomic Red Team data
         arteamData.add(List.of("Technique ID", "Technique Name", "Test Case", "Supported Platforms"));
 
-        List<String> techniqueIds = techniques.crawlTechniqueIds();
-     /*   for (String techniqueId : techniqueIds) {
+        List<String> atomicTechniqueIds = techniques.crawlTechniqueIds();
+     /*    for (String techniqueId : atomicTechniqueIds) {
             AtomicRedTeamTechnique technique = dataExtractor.fetchTechnique(techniqueId);
             String techniqueName = technique.getTechniqueName();
             for (AtomicRedTeamTestCase atomicTest : technique.getAtomicTests()) {
@@ -55,8 +55,7 @@ public class App {
                 row.add(techniqueName);
                 row.add(atomicTest.getName());
                 row.add(String.join(", ", atomicTest.getSupportedPlatforms()));
-                arteamData.add(row);
-            
+                arteamData.add(row);     
         }
 
         // Export Atomic Red Team data to Excel file
@@ -80,5 +79,6 @@ public class App {
         chart.drawChart();
 
     }
+  }
 
-}
+

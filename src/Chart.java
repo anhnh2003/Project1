@@ -78,37 +78,41 @@ public class Chart extends JComponent implements MouseListener {
             bothPercentage = (double) bothAngle / 360 * 100;
         }
         
-        // Draw both arc with percentage label
+        // Draw both arc
         g.setColor(BOTH_COLOR);
-        g.fillArc(CHART_MARGIN+300, CHART_MARGIN, CHART_SIZE, CHART_SIZE, ARC_START_ANGLE, bothAngle);
-        String bothLabel = String.format("%.1f%%", bothPercentage);
+        // Center of chart position
+        final int CENTER_MARGIN_X = CHART_MARGIN + 300;
+        final int CENTER_MARGIN_Y = CHART_MARGIN;
+        g.fillArc(CENTER_MARGIN_X,CENTER_MARGIN_Y, CHART_SIZE, CHART_SIZE, ARC_START_ANGLE, bothAngle);
         int radius = CHART_SIZE / 2;
-        int bothLabelX = (int) (CHART_MARGIN+350 + radius + radius * Math.cos(Math.toRadians(ARC_START_ANGLE + bothAngle / 2)));
-        int bothLabelY = (int) (CHART_MARGIN+30 + radius - radius * Math.sin(Math.toRadians(ARC_START_ANGLE + bothAngle / 2)));
-        g.setColor(Color.BLACK);
-        g.drawString(bothLabel, bothLabelX, bothLabelY);
-        
-        // Draw mitre not atomic arc with percentage label
+        // Set label position
+        int bothLabelX = (CENTER_MARGIN_X+220);
+        int bothLabelY = (CENTER_MARGIN_Y+120);
+        // Draw mitre not atomic arc 
         g.setColor(MITRE_NOT_ATOMIC_COLOR);
-        g.fillArc(CHART_MARGIN+300, CHART_MARGIN, CHART_SIZE, CHART_SIZE, ARC_START_ANGLE + bothAngle + ARC_GAP_ANGLE, mitreNotAtomicAngle);
-        String mitreNotAtomicLabel = String.format("%.1f%%", mitreNotAtomicPercentage);
-        int mitreNotAtomicLabelX = (int) (CHART_MARGIN+200 + radius + radius * Math.cos(Math.toRadians(ARC_START_ANGLE + bothAngle + ARC_GAP_ANGLE + mitreNotAtomicAngle / 2)));
-        int mitreNotAtomicLabelY = (int) (CHART_MARGIN + radius - radius * Math.sin(Math.toRadians(ARC_START_ANGLE + bothAngle + ARC_GAP_ANGLE + mitreNotAtomicAngle / 2)));
+        g.fillArc(CENTER_MARGIN_X, CENTER_MARGIN_Y, CHART_SIZE, CHART_SIZE, ARC_START_ANGLE + bothAngle + ARC_GAP_ANGLE, mitreNotAtomicAngle);
+        int mitreNotAtomicLabelX = (CENTER_MARGIN_X+20);
+        int mitreNotAtomicLabelY = (CENTER_MARGIN_Y+120);
+        // Draw percentage labels
         g.setColor(Color.BLACK);
+        String bothLabel = String.format("%.2f%%", bothPercentage);
+        String mitreNotAtomicLabel = String.format("%.2f%%", mitreNotAtomicPercentage);
+        g.drawString(bothLabel, bothLabelX, bothLabelY);
         g.drawString(mitreNotAtomicLabel, mitreNotAtomicLabelX, mitreNotAtomicLabelY);
         
         // Draw chart label
         g.setColor(Color.BLACK);
-        g.drawString("Mitre vs. Atomic Techniques", CHART_MARGIN+350, CHART_MARGIN-70);
+        g.drawString("Mitre vs. Atomic Techniques", CENTER_MARGIN_X+50, CENTER_MARGIN_Y-20);
         drawTable((Graphics2D) g, 50, 50, getWidth() - 100, getHeight() - 100);
         // draw description
         g.setColor(BOTH_COLOR);
-        g.fillArc(CHART_MARGIN+450, CHART_MARGIN+300, CHART_SIZE/10, CHART_SIZE/10, ARC_START_ANGLE + bothAngle + ARC_GAP_ANGLE, 30);
-        g.setColor(MITRE_NOT_ATOMIC_COLOR);
-        g.fillArc(CHART_MARGIN+250, CHART_MARGIN+300, CHART_SIZE/10, CHART_SIZE/10, ARC_START_ANGLE + bothAngle + ARC_GAP_ANGLE, 30);
+        g.fillRect(CENTER_MARGIN_X, CENTER_MARGIN_Y+2*radius+20, 20, 20);
         g.setColor(Color.BLACK);
-        g.drawString("Covered Techniques", CHART_MARGIN+450+CHART_SIZE/10+2, CHART_MARGIN+300+CHART_SIZE/10);
-        g.drawString("Missing Techniques", CHART_MARGIN+250+CHART_SIZE/10+2, CHART_MARGIN+300+CHART_SIZE/10);
+        g.drawString("Both", CENTER_MARGIN_X+20, CENTER_MARGIN_Y+2*radius+35);
+        g.setColor(MITRE_NOT_ATOMIC_COLOR);
+        g.fillRect(CENTER_MARGIN_X+110, CENTER_MARGIN_Y+2*radius+20, 20, 20);
+        g.setColor(Color.BLACK);
+        g.drawString("Mitre not Atomic", CENTER_MARGIN_X+130, CENTER_MARGIN_Y+2*radius+35);
     }
     @Override
     public void mouseClicked(MouseEvent e) {

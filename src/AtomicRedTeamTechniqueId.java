@@ -24,8 +24,8 @@ public class AtomicRedTeamTechniqueId {
         // Fetch the web page and parse it using jsoup
         Document doc = Jsoup.connect(ATOMICS_URL).get();
 
-        // Extract all anchor tags with the "js-navigation-open" class
-        Elements links = doc.select("a.js-navigation-open");
+        // Extract all anchor tags with the "Link--primary class
+        Elements links = doc.select("a.Link--primary");
 
         // Loop through all the links and extract the technique and sub-technique IDs from the file name
         Pattern techIdPattern = Pattern.compile(TECHNIQUE_ID_PATTERN);
@@ -75,4 +75,17 @@ public class AtomicRedTeamTechniqueId {
             return null;
         }  
     }
+    public static void main(String[] args) {
+        AtomicRedTeamTechniqueId atomicRedTeam = new AtomicRedTeamTechniqueId();
+        try {
+            List<String> techniqueIds = atomicRedTeam.crawlTechniqueIds();
+            System.out.println("Technique IDs extracted:");
+            for (String techniqueId : techniqueIds) {
+                System.out.println(techniqueId);
+            }
+        } catch (IOException e) {
+            System.err.println("An error occurred while crawling technique IDs: " + e.getMessage());
+        }
+    }
 }
+
