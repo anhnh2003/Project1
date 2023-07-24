@@ -1,4 +1,4 @@
-package p1;
+package com.simplilearn.mavenproject;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -86,12 +86,12 @@ public class Chart extends JComponent implements MouseListener {
         g.fillArc(CENTER_MARGIN_X,CENTER_MARGIN_Y, CHART_SIZE, CHART_SIZE, ARC_START_ANGLE, bothAngle);
         int radius = CHART_SIZE / 2;
         // Set label position
-        int bothLabelX = (CENTER_MARGIN_X+20);
+        int bothLabelX = (CENTER_MARGIN_X+220);
         int bothLabelY = (CENTER_MARGIN_Y+120);
         // Draw mitre not atomic arc 
         g.setColor(MITRE_NOT_ATOMIC_COLOR);
         g.fillArc(CENTER_MARGIN_X, CENTER_MARGIN_Y, CHART_SIZE, CHART_SIZE, ARC_START_ANGLE + bothAngle + ARC_GAP_ANGLE, mitreNotAtomicAngle);
-        int mitreNotAtomicLabelX = (CENTER_MARGIN_X+220);
+        int mitreNotAtomicLabelX = (CENTER_MARGIN_X+20);
         int mitreNotAtomicLabelY = (CENTER_MARGIN_Y+120);
         // Draw percentage labels
         g.setColor(Color.BLACK);
@@ -117,14 +117,12 @@ public class Chart extends JComponent implements MouseListener {
     @Override
     public void mouseClicked(MouseEvent e) {
         // Determine which arc was clicked
-        int x = e.getX();
-    	double xd = (double) x - CHART_MARGIN - 300;
-    	int y = e.getY() - CHART_MARGIN;
-        double yd = (double) y;
-    	int radius = CHART_SIZE / 2;
-    	int centerX = radius;
-    	int centerY = radius;
-    	double distance = Math.sqrt(Math.pow(xd - centerX, 2) + Math.pow(yd - centerY, 2));
+        int x = e.getX() - CHART_MARGIN-300;
+        int y = e.getY() - CHART_MARGIN;
+        int radius = CHART_SIZE / 2;
+        int centerX = radius;
+        int centerY = radius;
+        double distance = Math.sqrt(Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2));
         
         if (distance > radius) {
             // Clicked outside chart, do nothing

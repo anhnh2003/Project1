@@ -1,4 +1,4 @@
-package p1;
+package com.simplilearn.mavenproject;
 import java.util.List;
 
 public class AtomicRedTeamTestCase {
