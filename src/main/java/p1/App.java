@@ -19,13 +19,14 @@ public class App {
         
         try {
             techniqueIds = atomicTechniqueId.crawlTechniqueIds();
+            mitre.crawlMitreTechniques();
+            List<List<Object>> redteamData = new ArrayList<>();
         } catch (UnknownHostException e) {
             // Handle the exception
-            logger.error("Failed to fetch technique IDs from Atomic Red Team. Please check your internet connection and try again.");
+            logger.error("Failed to fetch technique IDs. Please check your internet connection and try again.");
             return; // Exit the program or handle the error appropriately
         }
         
-        mitre.crawlMitreTechniques();
         List<List<Object>> redteamData = new ArrayList<>();
         // Create a Scanner object to read user input
         Scanner scanner = new Scanner(System.in);
