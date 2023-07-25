@@ -1,5 +1,6 @@
 package com.simplilearn.mavenproject;
 import org.yaml.snakeyaml.Yaml;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
