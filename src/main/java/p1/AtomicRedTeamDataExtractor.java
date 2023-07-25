@@ -1,4 +1,4 @@
-package com.simplilearn.mavenproject;
+package p1;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.IOException;

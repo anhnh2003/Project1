@@ -1,10 +1,9 @@
-package com.simplilearn.mavenproject;
+package p1;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +52,7 @@ public class AtomicRedTeamTechniqueId {
         } catch (IOException e) {
             LOGGER.error( "Failed to fetch web page from URL " + ATOMICS_URL + ". Please check your internet connection and try again.");
             throw e;
-        }
+        } 
 
         return techniqueIds;
     }

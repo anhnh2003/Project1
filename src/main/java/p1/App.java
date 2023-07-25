@@ -1,4 +1,4 @@
-package com.simplilearn.mavenproject;
+package p1;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -20,11 +20,11 @@ public class App {
         try {
             techniqueIds = atomicTechniqueId.crawlTechniqueIds();
             mitre.crawlMitreTechniques();
-            List<List<Object>> redteamData = new ArrayList<>();
         } catch (UnknownHostException e) {
             // Handle the exception
-            logger.error("Failed to fetch technique IDs. Please check your internet connection and try again.");
-            return; // Exit the program or handle the error appropriately
+            System.out.println("Failed to connect to github.com. Please check your internet connection and try again.");
+             // Exit the program or handle the error appropriately
+            System.exit(0);
         }
         
         List<List<Object>> redteamData = new ArrayList<>();
@@ -135,6 +135,7 @@ public class App {
                         break;
                     case 6:
                         System.out.println("Exiting the program...");
+                        System.exit(0);
                         break;
                     default:
                         System.out.println("Invalid choice. Please try again.");

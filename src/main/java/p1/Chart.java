@@ -1,9 +1,11 @@
-package com.simplilearn.mavenproject;
+package p1;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -118,13 +120,12 @@ public class Chart extends JComponent implements MouseListener {
     public void mouseClicked(MouseEvent e) {
         // Determine which arc was clicked
         int x = e.getX();
-    	double xd = (double) x - CHART_MARGIN - 300;
-    	int y = e.getY() - CHART_MARGIN;
+    	double xd = (double) x;
+    	int y = e.getY();
         double yd = (double) y;
     	int radius = CHART_SIZE / 2;
-    	int centerX = radius;
-    	int centerY = radius;
-    	double distance = Math.sqrt(Math.pow(xd - centerX, 2) + Math.pow(yd - centerY, 2));
+    	final int CENTER_MARGIN_X = CHART_MARGIN + 300+radius;
+    	double distance = Math.sqrt(Math.pow(xd - CENTER_MARGIN_X, 2) + Math.pow(yd - CHART_MARGIN-radius, 2));
         
         if (distance > radius) {
             // Clicked outside chart, do nothing
@@ -133,7 +134,7 @@ public class Chart extends JComponent implements MouseListener {
         
         // Determine which set of items to display
         List<String> items;
-        if (x < centerX) {
+        if (x < CENTER_MARGIN_X) {
             items = atomic;
         } else {
             items = new ArrayList<>(mitreNotAtomic);
@@ -141,7 +142,7 @@ public class Chart extends JComponent implements MouseListener {
         
         // Display items
         JFrame frame = new JFrame();
-        String title = (x < centerX ? "Covered Techniques" : "Missing Techniques");
+        String title = (x < CENTER_MARGIN_X ? "Covered Techniques" : "Missing Techniques");
         StringBuilder message = new StringBuilder();
         message.append("Total: ").append(items.size()).append("Techniques").append("\n");
         for (String item : items) {
@@ -236,6 +237,13 @@ public class Chart extends JComponent implements MouseListener {
 
         frame.add(mainPanel);
         frame.setVisible(true);
+        /// if users close the GUI, the console will be terminated
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e){
+                System.exit(0);
+            }
+        });
     }
     
 }
