@@ -1,5 +1,6 @@
 package com.simplilearn.mavenproject;
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -7,16 +8,25 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class App {
-	    private static final Logger logger = LoggerFactory.getLogger(App.class);
-	    public static void main(String[] args) throws Exception {
+    private static final Logger logger = LoggerFactory.getLogger(App.class);
+
+    public static void main(String[] args) throws Exception {
         // Construct the Atomic Red Team and Mitre ATT&CK crawlers class
         MitreATTCKCrawler mitre = new MitreATTCKCrawler();
         AtomicRedTeamDataExtractor dataExtractor = new AtomicRedTeamDataExtractor();
         AtomicRedTeamTechniqueId atomicTechniqueId = new AtomicRedTeamTechniqueId();
-        List<String> techniqueIds = atomicTechniqueId.crawlTechniqueIds();
+        List<String> techniqueIds = null; // initialize to null, in case of exception
+        
+        try {
+            techniqueIds = atomicTechniqueId.crawlTechniqueIds();
+        } catch (UnknownHostException e) {
+            // Handle the exception
+            logger.error("Failed to fetch technique IDs from Atomic Red Team. Please check your internet connection and try again.");
+            return; // Exit the program or handle the error appropriately
+        }
+        
         mitre.crawlMitreTechniques();
         List<List<Object>> redteamData = new ArrayList<>();
-
         // Create a Scanner object to read user input
         Scanner scanner = new Scanner(System.in);
 
