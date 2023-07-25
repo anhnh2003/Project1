@@ -1,4 +1,4 @@
-package p1;
+package com.simplilearn.mavenproject;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
